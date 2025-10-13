@@ -20,7 +20,7 @@ def _():
 
     DATASET_PATH = os.getenv("DATASET_PATH")
     filename = "course_lead_scoring.csv"
-    return DATASET_PATH, List, filename, mo, pd
+    return DATASET_PATH, List, filename, mo, np, pd
 
 
 @app.cell
@@ -177,7 +177,7 @@ def _(df):
 def _(df, np):
     from sklearn.model_selection import train_test_split
 
-    # np.random.seed(42)
+    np.random.seed(42)
 
     df_train_full, df_test = train_test_split(df, test_size=0.2, random_state=42)
     df_train, df_val = train_test_split(df_train_full, test_size=0.25, random_state=42)
@@ -205,7 +205,6 @@ def _(mo):
     ## Question 3
     - Calculate the mutual information score between `y` and other categorical variables in the dataset. Use the training set only.
     - Round the scores to 2 decimals using round(score, 2).
-
     """
     )
     return
@@ -238,7 +237,7 @@ def _(mo):
         r"""
     Which of these variables has the biggest mutual information score?
 
-    `lead_source` 
+    `lead_source`
     """
     )
     return
