@@ -174,7 +174,7 @@ def _(df):
 
 
 @app.cell
-def _(df):
+def _(df, np):
     from sklearn.model_selection import train_test_split
 
     # np.random.seed(42)
