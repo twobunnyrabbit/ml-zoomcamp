@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11.13"
 dependencies = [
+    "altair>=5.5.0",
     "marimo>=0.7.1",
     "numpy>=2.3.3",
     "openai>=1.108.1",
@@ -12,4 +13,5 @@ dependencies = [
     "python-dotenv>=1.1.1",
     "scikit-learn>=1.7.2",
     "seaborn>=0.13.2",
+    "watchdog>=6.0.0",
 ]
