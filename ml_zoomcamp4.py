@@ -15,7 +15,7 @@ def _():
     import matplotlib.pyplot as plt
     from typing import List
     from dotenv import load_dotenv
-    return load_dotenv, os, pd
+    return load_dotenv, mo, np, os, pd
 
 
 @app.cell
@@ -124,11 +124,102 @@ def _(categorical, df_val, dv, model, numerical, y_val):
     y_pred = model.predict_proba(X_val)[:, 1]
     churn_decision = (y_pred >= 0.5)
     (y_val == churn_decision).mean()
+    return churn_decision, y_pred
+
+
+@app.cell
+def _(mo):
+    mo.md(
+        r"""
+    ## Accuracy and Dummy model
+
+    - `y_val` is the truth
+    - `y_pred` is the soft prediction with a probability value
+    - `churn_decision` is the calculated using `y_pred >= 0.5`
+    """
+    )
     return
 
 
 @app.cell
-def _():
+def _(y_val):
+    len(y_val)
+    return
+
+
+@app.cell
+def _(y_val):
+    y_val
+    return
+
+
+@app.cell
+def _(y_val):
+    y_val.sum()
+    return
+
+
+@app.cell
+def _(churn_decision):
+    churn_decision
+    return
+
+
+@app.cell
+def _(churn_decision):
+    churn_decision.sum()
+    return
+
+
+@app.cell
+def _(churn_decision, y_val):
+    (y_val == churn_decision).mean()
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""The accuracy calculated above is based a on threshold of 0.5. What would the accuracy be like if the threshold changes?""")
+    return
+
+
+@app.cell
+def _(np):
+    thresholds = np.linspace(0, 1, 21)
+    thresholds
+    return (thresholds,)
+
+
+@app.cell
+def _(thresholds, y_pred, y_val):
+    from sklearn.metrics import accuracy_score
+    def _():
+        scores = []
+        for t in thresholds:
+            score = accuracy_score(y_val, y_pred >= t)
+            scores.append({'threshold': t, 'score': score})
+        return scores
+
+    scores = _()
+    return (scores,)
+
+
+@app.cell
+def _(pd, scores):
+    df_scores = pd.DataFrame(scores)
+    df_scores
+    return (df_scores,)
+
+
+@app.cell
+def _(df_scores):
+    df_scores.plot()
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""0.5 seems to be the best threshold in terms of accuracy.""")
     return
 
 
