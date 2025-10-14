@@ -329,12 +329,7 @@ def _(mo):
 
 @app.cell
 def _(mo):
-    mo.md(
-        r"""
-    Precision - proportion of predicted positive cases that are actually positive.
-
-    """
-    )
+    mo.md(r"""Precision - proportion of predicted positive cases that are actually positive.""")
     return
 
 
@@ -370,7 +365,6 @@ def _(mo):
     $\text{True Positive Rate (TPR)} = \frac{TP}{FN + FP}$
 
     Ideally, FPR should be as small as possible, TPR should be as large as possible.
-
     """
     )
     return
@@ -633,7 +627,6 @@ def _(mo):
     There are 1023 actual negative classes and 386 actual positive classes. Within these classes are a range of scores for each observation.
 
     How likely is the predicted probability of a randomly selected actual positive class be higher compared to a random;y selected actual negative class? AUC gives us this probability. Approximately 84% of the time it will be correct.
-
     """
     )
     return
@@ -661,13 +654,29 @@ def _(neg, neg_ind, pos, pos_ind):
 
 
 @app.cell
-def _():
-    # now we perform this random process 10000 times
-    return
+def _(neg, pos, random):
+    def _():
+        # now we perform this random process 10000 times
+        n = 10000
+        comparisons = []
+        for i in range(n):
+            pos_ind = random.randint(0, len(pos) - 1)
+            neg_ind = random.randint(0, len(neg) - 1)
+            is_bigger = pos[pos_ind] > neg[neg_ind]
+            comparisons.append(is_bigger)
+        return comparisons
+
+
+    comparisons = _()
+    return (comparisons,)
 
 
 @app.cell
-def _():
+def _(comparisons, np):
+    # after randomingly selecting a negative class and postive class,
+    # the proportion of times that the score in a positive class is larger than the negative class is
+    # 0.85
+    np.array(comparisons).mean()
     return
 
 
