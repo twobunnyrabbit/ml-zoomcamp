@@ -69,7 +69,7 @@ def _(df, train_test_split):
     del df_train['churn']
     del df_val['churn']
     del df_test['churn']
-    return df_train, df_val, y_train, y_val
+    return df_full_train, df_train, df_val, y_train, y_val
 
 
 @app.cell
@@ -677,6 +677,112 @@ def _(comparisons, np):
     # the proportion of times that the score in a positive class is larger than the negative class is
     # 0.85
     np.array(comparisons).mean()
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(
+        r"""
+    ## Cross-validation
+
+    - evaluating the same model on different subsets of data
+    - getting the average prediction and the spread within predictions
+    """
+    )
+    return
+
+
+@app.cell
+def _(DictVectorizer, LogisticRegression, categorical, numerical):
+    def train(df_train, y, C=1.0):
+        dicts = df_train[categorical + numerical].to_dict(orient='records')
+        dv = DictVectorizer(sparse=False)
+        X_train = dv.fit_transform(dicts)
+
+        model = LogisticRegression(C=C, max_iter=10000)
+        model.fit(X_train, y)
+
+        return dv, model
+    return (train,)
+
+
+@app.cell
+def _(df_train, train, y_train):
+    dv_train, model_train = train(df_train, y_train, C=0.001)
+    return dv_train, model_train
+
+
+@app.cell
+def _(categorical, numerical):
+    def predict(df, dv, model):
+        dicts = df[categorical + numerical].to_dict(orient='records')
+        X = dv.transform(dicts)
+        y_pred = model.predict_proba(X)[:, 1]
+
+        return y_pred
+    
+    return (predict,)
+
+
+@app.cell
+def _(df_val, dv_train, model_train, predict):
+    y_pred2 = predict(df_val, dv_train, model_train )
+    return
+
+
+@app.cell
+def _():
+    from sklearn.model_selection import KFold
+    return (KFold,)
+
+
+@app.cell
+def _():
+    from tqdm.auto import tqdm
+    return (tqdm,)
+
+
+@app.cell
+def _(KFold, df_full_train, predict, roc_auc_score, tqdm, train):
+    n_splits = 5
+
+    scores_c = []
+    for C in tqdm([0.001, 0.01, 0.1, 0.5, 1, 5, 10]):
+    
+        kfold = KFold(n_splits=n_splits, shuffle=True, random_state=1)
+        scores_k = []
+        for train_idx, val_idx in kfold.split(df_full_train):
+            df_train_k = df_full_train.iloc[train_idx]
+            df_val_k = df_full_train.iloc[val_idx]
+    
+            y_train_k = df_train_k.churn.values
+            y_val_k = df_val_k.churn.values
+        
+            dv_train_k, model_train_k = train(df_train_k, y_train_k, C=C)
+            y_pred3 = predict(df_val_k, dv_train_k, model_train_k)
+            auc_k = roc_auc_score(y_val_k, y_pred3)
+            scores_k.append(auc_k)
+        scores_c.append({'C': C, 'fold': scores_k})
+    return (scores_c,)
+
+
+@app.cell
+def _(scores_c):
+    # [{'stats': f.__name__, 'val': round(f(scores_k), 3)} for f in [np.mean, np.std]]
+    scores_c
+    return
+
+
+@app.cell
+def _(np, pd, scores_c):
+    # [{'mean': np.array(x['fold']).mean().round(3)} for x in scores_c]
+    pd.DataFrame([{'C': x['C'], 'mean': np.array(x['fold']).mean().round(3), 'std': np.array(x['fold']).std().round(3)} for x in scores_c])
+    return
+
+
+@app.cell
+def _():
     return
 
 
