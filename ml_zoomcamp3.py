@@ -14,7 +14,6 @@ def _():
     import matplotlib.pyplot as plt
 
     from dotenv import load_dotenv
-
     return load_dotenv, mo, np, os, pd, plt
 
 
@@ -38,7 +37,6 @@ def _(df):
 @app.cell
 def _(df):
     df.columns = df.columns.str.lower().str.replace(' ', '_')
-
     return
 
 
@@ -227,7 +225,6 @@ def _(df_full_train, numerical):
     exclude = ['customerid', 'tenure', 'churn'] + numerical
     categorical = [x for x in df_full_train.columns if x not in exclude]
     categorical
-
     return (categorical,)
 
 
@@ -266,7 +263,6 @@ def _(df_full_train, global_churn_rate, pd):
         })
         group_bys.append(result)
     group_bys
-
     return
 
 
@@ -333,12 +329,7 @@ def _(df_mutual_info_2):
 
 @app.cell
 def _(mo):
-    mo.md(
-        r"""
-
-    ## Feature importance - correlation
-    """
-    )
+    mo.md(r"""## Feature importance - correlation""")
     return
 
 
