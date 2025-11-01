@@ -12,3 +12,4 @@ wheels/
 .env
 rscripts/
 learning_materials/
+__marimo__/session
