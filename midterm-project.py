@@ -227,7 +227,7 @@ def _(genre_list, genre_mtx):
     def update_mtx(row, genre):
         idx = genre_list.index(genre)
         genre_mtx[row, idx] = 1
-    
+
     return (update_mtx,)
 
 
