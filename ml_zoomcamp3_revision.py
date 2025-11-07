@@ -20,6 +20,7 @@ def _():
     import matplotlib.pyplot as plt
 
     from dotenv import load_dotenv
+
     return load_dotenv, mo, os, pd
 
 
@@ -44,7 +45,7 @@ def _(df):
 @app.cell
 def _(df, pd):
     # convert totalcharges to numeric
-    df['totalcharges'] = pd.to_numeric(df['totalcharges'], errors='coerce')
+    df["totalcharges"] = pd.to_numeric(df["totalcharges"], errors="coerce")
     return
 
 
@@ -52,24 +53,24 @@ def _(df, pd):
 def _(df):
     # convert the target variable churn to numeric
     # df['churn'] = (df['churn'] == "Yes").astype('int')
-    df['churn']
+    df["churn"]
     return
 
 
 @app.cell
 def _(df):
     # convert seniorcitizen to categorical variable
-    df['seniorcitizen'] = df['seniorcitizen'].map({0: 'No', 1: 'Yes'})
+    df["seniorcitizen"] = df["seniorcitizen"].map({0: "No", 1: "Yes"})
     return
 
 
 @app.cell
 def _(df):
     # get all the categorical variables
-    is_object = df.dtypes == 'object'
-    categoricals = df.dtypes[df.dtypes == 'object'].index.to_list()
+    is_object = df.dtypes == "object"
+    categoricals = df.dtypes[df.dtypes == "object"].index.to_list()
     # remove the id column and the target variable churn
-    categoricals = [x for x in categoricals if x not in ['customerid', 'churn']]
+    categoricals = [x for x in categoricals if x not in ["customerid", "churn"]]
     categoricals
     return categoricals, is_object
 
@@ -93,33 +94,35 @@ def _(categoricals, df, numericals):
 @app.cell
 def _(df):
     # examin totalcharges
-    total_charges_na = df['totalcharges'].isna()
+    total_charges_na = df["totalcharges"].isna()
     df.loc[total_charges_na, :]
     return
 
 
 @app.cell
 def _(df):
-    df[['tenure', 'contract', 'monthlycharges', 'totalcharges']]
+    df[["tenure", "contract", "monthlycharges", "totalcharges"]]
     return
 
 
 @app.cell
 def _(mo):
-    mo.md(r"""For missing `totalcharges` this can be approximated by multiplying `tenure` by `monthlycharges`""")
+    mo.md(
+        r"""For missing `totalcharges` this can be approximated by multiplying `tenure` by `monthlycharges`"""
+    )
     return
 
 
 @app.cell
 def _(df):
-    df['totalcharges'] = df['totalcharges'].fillna(df['tenure'] * df['monthlycharges'])
+    df["totalcharges"] = df["totalcharges"].fillna(df["tenure"] * df["monthlycharges"])
     return
 
 
 @app.cell
 def _(df):
     # What is the churn rate?
-    df['churn'].mean()
+    df["churn"].mean()
     return
 
 
@@ -132,13 +135,16 @@ def _(mo):
 @app.cell
 def _():
     from sklearn.model_selection import train_test_split
+
     return (train_test_split,)
 
 
 @app.cell
 def _(categoricals, df, numericals, train_test_split):
     df_full_train, df_test = train_test_split(df, test_size=0.2, random_state=1)
-    df_full_train, df_test = [x.reset_index(drop=True) for x in [df_full_train, df_test]]
+    df_full_train, df_test = [
+        x.reset_index(drop=True) for x in [df_full_train, df_test]
+    ]
 
     # keep only relevant columns
     df_full_train = df_full_train[categoricals + numericals]
@@ -163,25 +169,28 @@ def get_variable_name_simple(variable):
 
 @app.cell
 def _(df, df_full_train, df_test, df_train, df_val):
-    {get_variable_name_simple(x) :x.shape for x in [df, df_full_train, df_train, df_val, df_test]}
+    {
+        get_variable_name_simple(x): x.shape
+        for x in [df, df_full_train, df_train, df_val, df_test]
+    }
     return
 
 
 @app.cell
 def _(df_test, df_train, df_val):
     # set up target values
-    y_train, y_val, y_test = [x['churn'].values for x in [df_train, df_val, df_test]]
+    y_train, y_val, y_test = [x["churn"].values for x in [df_train, df_val, df_test]]
     # remove target variable for each dataframe
     # del df_full_train['churn']
-    del df_train['churn']
-    del df_val['churn']
-    del df_test['churn']
+    del df_train["churn"]
+    del df_val["churn"]
+    del df_test["churn"]
     return
 
 
 @app.cell
 def _(df_full_train):
-    churn_global = df_full_train['churn'].mean()
+    churn_global = df_full_train["churn"].mean()
     churn_global
     return
 
@@ -205,7 +214,7 @@ app._unparsable_cell(
     for c in categoricals
     df_full_train.groupby('gender')['churn'].mean().to_dict()
     """,
-    name="_"
+    name="_",
 )
 
 
