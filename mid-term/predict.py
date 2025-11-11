@@ -6,7 +6,10 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 # --- Configuration ---
-MODEL_FILENAME = "xgboost_insurance_model.bin"
+# Construct an absolute path to the model file
+MODEL_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_FILENAME = os.path.join(MODEL_DIR, "xgboost_insurance_model.bin")
+
 
 # --- Pydantic Model for Input Data ---
 # This defines the structure of the request body.
@@ -18,10 +21,11 @@ class CustomerData(BaseModel):
     children: int
     smoker: str
 
+
 # --- Initialize FastAPI App ---
 app = FastAPI(
     title="Insurance Charge Prediction API",
-    description="An API to predict insurance charges using a trained XGBoost model."
+    description="An API to predict insurance charges using a trained XGBoost model.",
 )
 
 # --- Load Model and Preprocessors ---
@@ -29,10 +33,13 @@ app = FastAPI(
 try:
     with open(MODEL_FILENAME, "rb") as f_in:
         model, dv, scaler = pickle.load(f_in)
-    print("Model, vectorizer, and scaler loaded successfully.")
+    print(f"Model, vectorizer, and scaler loaded successfully from {MODEL_FILENAME}")
 except FileNotFoundError:
-    print(f"Error: Model file not found at {MODEL_FILENAME}. Please run train_xgb.py first.")
+    print(
+        f"Error: Model file not found at {MODEL_FILENAME}. Please run train_xgb.py first."
+    )
     model, dv, scaler = None, None, None
+
 
 # --- Prediction Endpoint ---
 @app.post("/predict")
@@ -65,14 +72,16 @@ def predict(customer_data: CustomerData):
     final_prediction = float(original_prediction[0])
 
     # Return the prediction as a JSON response
-    return {
-        "prediction": final_prediction
-    }
+    return {"prediction": final_prediction}
+
 
 # --- Root Endpoint ---
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to the Insurance Charge Prediction API. Go to /docs for more information."}
+    return {
+        "message": "Welcome to the Insurance Charge Prediction API. Go to /docs for more information."
+    }
+
 
 # To run this app:
 # 1. Make sure you have uvicorn installed: pip install uvicorn
