@@ -72,7 +72,7 @@ def predict(customer_data: CustomerData):
     final_prediction = float(original_prediction[0])
 
     # Return the prediction as a JSON response
-    return {"prediction": final_prediction}
+    return {"prediction": np.round(final_prediction, 2)}
 
 
 # --- Root Endpoint ---
