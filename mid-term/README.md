@@ -117,7 +117,7 @@ curl -X POST "http://localhost:9696/predict" \
 **Example Response:**
 ```json
 {
-  "prediction": 5272.58
+  "prediction": 4006.93
 }
 ```
 
