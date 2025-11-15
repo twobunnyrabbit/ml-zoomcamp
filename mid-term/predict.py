@@ -84,6 +84,6 @@ def read_root():
 
 
 # To run this app:
-# 1. Make sure you have uvicorn installed: pip install uvicorn
+# 1. Make sure you have uvicorn installed: uv pip install uvicorn
 # 2. Run the following command in your terminal:
 # uvicorn predict:app --reload
